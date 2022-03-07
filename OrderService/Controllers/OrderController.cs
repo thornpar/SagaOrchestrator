@@ -1,3 +1,4 @@
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,11 +10,13 @@ public class OrderController : ControllerBase
 {
     private readonly DbContextOptions<ApplicationDbContext> _dbContextOptions;
     private readonly ICustomerService _customerService;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public OrderController(DbContextOptions<ApplicationDbContext> dbContextOptions, ICustomerService customerService)
+    public OrderController(DbContextOptions<ApplicationDbContext> dbContextOptions, ICustomerService customerService, IPublishEndpoint publishEndpoint)
     {
         _dbContextOptions = dbContextOptions;
         _customerService = customerService;
+        _publishEndpoint = publishEndpoint;
     }
 
     [HttpPost]
@@ -27,7 +30,10 @@ public class OrderController : ControllerBase
             Credits = credits,
             CustomerId = customerId
         });
-        //BAM!
+        await _publishEndpoint.Publish(new Message
+        {
+            Text = "From orderservice"
+        });
         await dbContext.SaveChangesAsync();
         return "";
     }

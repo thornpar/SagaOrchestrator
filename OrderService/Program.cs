@@ -12,7 +12,7 @@ builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<MessageConsumer>();
 
-    x.UsingInMemory((context,cfg) =>
+    x.UsingRabbitMq((context,cfg) =>
     {
         cfg.ConfigureEndpoints(context);
     });

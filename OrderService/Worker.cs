@@ -13,11 +13,11 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        /*while (!stoppingToken.IsCancellationRequested)
         {
             await _bus.Publish(new Message {Text = $"The time is {DateTimeOffset.Now}"});
 
             await Task.Delay(1000, stoppingToken);
-        }
+        }*/
     }
 }

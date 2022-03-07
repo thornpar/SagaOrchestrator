@@ -1,5 +1,7 @@
 using CustomerService;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using OrderService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,16 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<MessageConsumer>();
+
+    x.UsingRabbitMq((context,cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
